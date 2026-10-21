@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    container_name: tetri-db
+    environment:
+      POSTGRES_USER: tetri
+      POSTGRES_PASSWORD: tetri
+      POSTGRES_DB: tetri
+    ports:
+      - "5432:5432"
+    volumes:
+      - tetri-pgdata:/var/lib/postgresql/data
+
+volumes:
+  tetri-pgdata:
