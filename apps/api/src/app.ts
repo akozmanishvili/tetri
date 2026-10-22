@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { prisma } from "./lib/prisma.js";
+import { instrumentsRouter } from "./routes/instruments.js";
 
 export const app = express();
 
@@ -19,3 +20,5 @@ app.get("/health", async (_req, res) => {
       .json({ status: "degraded", service: "tetri-api", database: "down" });
   }
 });
+
+app.use("/api/instruments", instrumentsRouter);
