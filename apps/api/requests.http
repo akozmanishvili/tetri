@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:4000
+
+### Sign up
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "ameksa@example.com",
+  "password": "ravici123",
+  "displayName": "Ameksa",
+  "locale": "ka"
+}
+
+### Log in
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ameksa@example.com",
+  "password": "ravici123"
+}
+
+### who am I? 
+GET {{baseUrl}}/api/me
+Authorization: Bearer {{login.response.body.accessToken}}
+
+### Refresh 
+POST {{baseUrl}}/api/auth/refresh
+
+### Log out
+POST {{baseUrl}}/api/auth/logout
