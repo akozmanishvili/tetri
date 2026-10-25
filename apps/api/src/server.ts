@@ -1,8 +1,6 @@
-import "dotenv/config";
+import { env } from "./config/env.js";
 import { app } from "./app.js";
 
-const PORT = Number(process.env.PORT) || 4000;
-
-app.listen(PORT, () => {
-  console.log(`Tetri API running on http://localhost:${PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`Tetri API running on http://localhost:${env.PORT}`);
 });
