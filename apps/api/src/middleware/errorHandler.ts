@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from "express";
+import { TradingError } from "../services/trading.js";
 import { ZodError } from "zod";
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
@@ -10,6 +11,11 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
         message: i.message,
       })),
     });
+
+    return;
+  }
+  if (err instanceof TradingError) {
+    res.status(err.status).json({ error: err.message });
     return;
   }
 

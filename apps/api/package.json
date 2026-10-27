@@ -15,7 +15,9 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "jobs:publish": "tsx src/jobs/publishPrices.ts",
+    "jobs:settle": "tsx src/jobs/settle.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "@prisma/client": "^7.10.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "decimal.js": "^10.6.0",
     "dotenv": "^18.0.8",
     "express": "^5.3.0",
     "helmet": "^8.3.0",

@@ -30,3 +30,25 @@ POST {{baseUrl}}/api/auth/refresh
 
 ### Log out
 POST {{baseUrl}}/api/auth/logout
+
+### Buy 500 GEL of Lion Finance 
+POST {{baseUrl}}/api/orders
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "symbol": "BGEO", "side": "BUY", "amountTetri": "50000" }
+
+### Buy 1,000 GEL of the money market fund 
+POST {{baseUrl}}/api/orders
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "symbol": "TMMF", "side": "BUY", "amountTetri": "100000" }
+
+### My orders
+GET {{baseUrl}}/api/orders
+Authorization: Bearer {{login.response.body.accessToken}}
+
+### My portfolio
+GET {{baseUrl}}/api/portfolio
+Authorization: Bearer {{login.response.body.accessToken}}
