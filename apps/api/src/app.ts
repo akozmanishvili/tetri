@@ -8,6 +8,8 @@ import { authRouter } from "./routes/auth.js";
 import { meRouter } from "./routes/me.js";
 import { instrumentsRouter } from "./routes/instruments.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { ordersRouter } from "./routes/orders.js";
+import { portfolioRouter } from "./routes/portfolio.js";
 
 export const app = express();
 
@@ -36,5 +38,7 @@ app.get("/health", async (_req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/me", meRouter);
 app.use("/api/instruments", instrumentsRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/portfolio", portfolioRouter);
 
 app.use(errorHandler);
