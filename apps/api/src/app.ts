@@ -11,6 +11,12 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 export const app = express();
 
+// BigInt converts to string in every JSON response
+// Prisma already serializes itself as string.
+app.set("json replacer", (_key: string, value: unknown) =>
+  typeof value === "bigint" ? value.toString() : value,
+);
+
 app.use(helmet());
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: "100kb" }));
