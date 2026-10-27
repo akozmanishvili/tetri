@@ -15,7 +15,9 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "jobs:publish": "tsx src/jobs/publishPrices.ts",
+    "jobs:settle": "tsx src/jobs/settle.ts"
   },
   "keywords": [],
   "author": "",
