@@ -1,86 +1,120 @@
-import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router";
 import { useAuth } from "../auth/context";
-import { apiFetch } from "../lib/api";
-import { formatTetri } from "../lib/money";
-import type { Instrument, Me } from "../lib/types";
+import { nameFor, typeLabels, usePortfolio } from "../lib/queries";
+import {
+  STARTING_BALANCE_TETRI,
+  formatPercent,
+  formatSignedTetri,
+  formatTetri,
+  formatUnits,
+  profitColor,
+} from "../lib/money";
 
-const typeLabels: Record<Instrument["type"], string> = {
-  MONEY_MARKET_FUND: "Money market fund",
-  BOND_FUND: "Bond fund",
-  EQUITY_FUND: "Equity fund",
-  STOCK: "Stock",
-};
+function StatCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-stone-200 bg-white p-4">
+      <p className="text-xs uppercase tracking-wide text-stone-500">{label}</p>
+      <p className="mt-1 text-lg font-semibold text-stone-900">{value}</p>
+    </div>
+  );
+}
 
 export function DashboardPage() {
-  const { logout } = useAuth();
-  const me = useQuery({
-    queryKey: ["me"],
-    queryFn: () => apiFetch<Me>("/api/me"),
-  });
-  const instruments = useQuery({
-    queryKey: ["instruments"],
-    queryFn: () => apiFetch<Instrument[]>("/api/instruments"),
-  });
+  const { user } = useAuth();
+  const { data: portfolio, isPending, isError } = usePortfolio();
+
+  if (isPending)
+    return <p className="text-stone-500">Loading your portfolio...</p>;
+  if (isError)
+    return <p className="text-red-700">Couldn't load your portfolio.</p>;
+
+  const totalReturn = BigInt(portfolio.totalTetri) - STARTING_BALANCE_TETRI;
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-red-900">Tetri</h1>
-        <button
-          onClick={logout}
-          className="text-sm text-stone-600 hover:text-red-800"
-        >
-          Log out
-        </button>
-      </header>
-
-      <section className="mb-8 rounded-2xl bg-red-900 p-6 text-white shadow-sm">
+    <div className="space-y-8">
+      <section className="rounded-2xl bg-red-900 p-6 text-white shadow-sm">
         <p className="text-sm opacity-80">
-          Gamarjoba{me.data ? `, ${me.data.displayName}` : ""}! Your cash
-          balance
+          Gamarjoba, {user?.displayName}! Your total wealth
         </p>
         <p className="mt-1 text-4xl font-bold">
-          {me.data ? formatTetri(me.data.balanceTetri) : "..."}
+          {formatTetri(portfolio.totalTetri)}
         </p>
+        <p className="mt-2 text-sm opacity-90">
+          {formatSignedTetri(totalReturn)} (
+          {formatPercent(totalReturn, STARTING_BALANCE_TETRI)}) since you joined
+        </p>
+      </section>
+
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label="Cash" value={formatTetri(portfolio.cashTetri)} />
+        <StatCard
+          label="Invested"
+          value={formatTetri(portfolio.investedTetri)}
+        />
+        <StatCard
+          label="Pending orders"
+          value={formatTetri(portfolio.pendingTetri)}
+        />
       </section>
 
       <section>
         <h2 className="mb-3 text-lg font-semibold text-stone-900">
-          What you can invest in
+          Your holdings
         </h2>
-        {instruments.isPending && <p className="text-stone-500">Loading...</p>}
-        {instruments.isError && (
-          <p className="text-red-700">Couldn't load instruments.</p>
-        )}
-        {instruments.data && (
+
+        {portfolio.holdings.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center">
+            <p className="text-stone-600">You don't own anything yet.</p>
+            <Link
+              to="/markets"
+              className="mt-2 inline-block font-medium text-red-800 hover:underline"
+            >
+              Browse the markets →
+            </Link>
+          </div>
+        ) : (
           <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
             <table className="w-full text-left text-sm">
               <thead className="bg-stone-50 text-stone-500">
                 <tr>
-                  <th className="px-4 py-3">Symbol</th>
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Currency</th>
-                  <th className="px-4 py-3">Annual fee</th>
+                  <th className="px-4 py-3">Instrument</th>
+                  <th className="px-4 py-3 text-right">Units</th>
+                  <th className="px-4 py-3 text-right">Value</th>
+                  <th className="px-4 py-3 text-right">Profit / loss</th>
                 </tr>
               </thead>
               <tbody>
-                {instruments.data.map((i) => (
-                  <tr key={i.id} className="border-t border-stone-100">
-                    <td className="px-4 py-3 font-mono font-semibold">
-                      {i.symbol}
-                    </td>
+                {portfolio.holdings.map((h) => (
+                  <tr
+                    key={h.symbol}
+                    className="border-t border-stone-100 hover:bg-stone-50"
+                  >
                     <td className="px-4 py-3">
-                      {me.data?.locale === "ka" ? i.nameKa : i.nameEn}
+                      <Link to={`/instruments/${h.symbol}`} className="block">
+                        <span className="font-mono font-semibold">
+                          {h.symbol}
+                        </span>
+                        <span className="ml-2 text-stone-600">
+                          {nameFor(h, user?.locale)}
+                        </span>
+                        <span className="block text-xs text-stone-400">
+                          {typeLabels[h.type]}
+                        </span>
+                      </Link>
                     </td>
-                    <td className="px-4 py-3 text-stone-600">
-                      {typeLabels[i.type]}
+                    <td className="px-4 py-3 text-right font-mono">
+                      {formatUnits(h.units)}
                     </td>
-                    <td className="px-4 py-3">{i.currency}</td>
-                    <td className="px-4 py-3">
-                      {i.expenseRatioBps === null
-                        ? "—"
-                        : `${(i.expenseRatioBps / 100).toFixed(2)}%`}
+                    <td className="px-4 py-3 text-right">
+                      {formatTetri(h.valueTetri)}
+                    </td>
+                    <td
+                      className={`px-4 py-3 text-right ${profitColor(h.profitTetri)}`}
+                    >
+                      {formatSignedTetri(h.profitTetri)}
+                      <span className="block text-xs">
+                        {formatPercent(h.profitTetri, h.costBasisTetri)}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -89,6 +123,6 @@ export function DashboardPage() {
           </div>
         )}
       </section>
-    </main>
+    </div>
   );
 }
