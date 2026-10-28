@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { GuestOnly, RequireAuth } from "./auth/guards";
-import { AppLayout } from "./components/authLayout";
+import { AppLayout } from "./components/AppLayout.tsx";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { DashboardPage } from "./pages/DashboardPage";

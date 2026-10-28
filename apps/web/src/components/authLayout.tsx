@@ -1,56 +1,36 @@
-import { NavLink, Outlet } from "react-router";
-import { useAuth } from "../auth/context";
+import type { ReactNode } from "react";
 
-const links = [
-  { to: "/", label: "Portfolio", end: true },
-  { to: "/markets", label: "Markets", end: false },
-  { to: "/orders", label: "Orders", end: false },
-];
+export const inputClass =
+  "w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 " +
+  "outline-none focus:border-red-800 focus:ring-2 focus:ring-red-800/20";
 
-export function AppLayout() {
-  const { user, logout } = useAuth();
+export const buttonClass =
+  "w-full rounded-lg bg-red-800 px-4 py-2 font-medium text-white " +
+  "hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-60";
 
+export function AuthLayout({
+  title,
+  toast,
+  children,
+}: {
+  title: string;
+  toast: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-          <div className="flex items-center gap-6">
-            <span className="text-xl font-bold text-red-900">Tetri</span>
-            <nav className="flex gap-1">
-              {links.map((l) => (
-                <NavLink
-                  key={l.to}
-                  to={l.to}
-                  end={l.end}
-                  className={({ isActive }) =>
-                    `rounded-lg px-3 py-1.5 text-sm font-medium ${
-                      isActive
-                        ? "bg-red-50 text-red-900"
-                        : "text-stone-600 hover:text-stone-900"
-                    }`
-                  }
-                >
-                  {l.label}
-                </NavLink>
-              ))}
-            </nav>
-          </div>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="hidden text-stone-500 sm:inline">
-              {user?.displayName}
-            </span>
-            <button
-              onClick={logout}
-              className="text-stone-600 hover:text-red-800"
-            >
-              Log out
-            </button>
-          </div>
+    <main className="grid min-h-screen place-items-center bg-stone-50 px-4">
+      <div className="w-full max-w-sm">
+        <h1 className="mb-1 text-center text-3xl font-bold text-red-900">
+          Tetri
+        </h1>
+        <p className="mb-6 text-center text-sm italic text-stone-500">
+          🍷 Tamada: “{toast}”
+        </p>
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold text-stone-900">{title}</h2>
+          {children}
         </div>
-      </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <Outlet />
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
