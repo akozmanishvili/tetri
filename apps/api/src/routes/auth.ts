@@ -1,6 +1,6 @@
 import { Router, type CookieOptions, type Response } from "express";
 import { z } from "zod";
-import { hash, verify } from "@node-rs/argon2";
+import { hashPassword, verifyPassword } from "../lib/password.js";
 import { prisma } from "../lib/prisma.js";
 import { env } from "../config/env.js";
 import { isUniqueViolation } from "../lib/errors.js";
@@ -16,6 +16,8 @@ export const authRouter = Router();
 
 const STARTING_BALANCE_TETRI = 1_000_000n; // 10,000.00 GEL
 const REFRESH_COOKIE = "tetri_refresh";
+
+const DUMMY_HASH = await hashPassword("timing-attack-dummy-password");
 
 const cookieOptions: CookieOptions = {
   httpOnly: true, // XSS can't steal it
@@ -59,7 +61,7 @@ async function issueRefreshToken(res: Response, userId: string) {
 
 authRouter.post("/signup", async (req, res) => {
   const body = signupSchema.parse(req.body);
-  const passwordHash = await hash(body.password);
+  const passwordHash = await hashPassword(body.password);
 
   try {
     // user + ledger grant + wallet all succeed or none
@@ -103,7 +105,10 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   const body = loginSchema.parse(req.body);
   const user = await prisma.user.findUnique({ where: { email: body.email } });
-  const valid = user ? await verify(user.passwordHash, body.password) : false;
+  const valid = await verifyPassword(
+    user?.passwordHash ?? DUMMY_HASH,
+    body.password,
+  );
 
   // same message for no such user and wrong password so attackers dont get info
   if (!user || !valid) {
