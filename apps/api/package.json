@@ -17,7 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "jobs:publish": "tsx src/jobs/publishPrices.ts",
-    "jobs:settle": "tsx src/jobs/settle.ts"
+    "jobs:settle": "tsx src/jobs/settle.ts",
+    "build:lambda": "node scripts/build-lambda.mjs"
   },
   "keywords": [],
   "author": "",
