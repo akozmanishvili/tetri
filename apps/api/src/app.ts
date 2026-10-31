@@ -10,6 +10,7 @@ import { instrumentsRouter } from "./routes/instruments.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { ordersRouter } from "./routes/orders.js";
 import { portfolioRouter } from "./routes/portfolio.js";
+import crypto from "node:crypto";
 
 export const app = express();
 
@@ -24,7 +25,22 @@ app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: "100kb" }));
 app.use(cookieParser());
 
-app.get("/health", async (_req, res) => {
+function safeEqual(a: string, b: string) {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+app.use((req, res, next) => {
+  const expected = env.ORIGIN_VERIFY_SECRET;
+  if (expected && !safeEqual(req.get("x-origin-verify") ?? "", expected)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  next();
+});
+
+app.get(["/health", "/api/health"], async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: "ok", service: "tetri-api", database: "up" });
