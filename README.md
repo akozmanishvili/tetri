@@ -1,5 +1,7 @@
 # Tetri 🇬🇪
 
+**🌐 Live demo: https://d1mb2bkp03svje.cloudfront.net/**
+
 ![CI](https://github.com/akozmanishvili/tetri/actions/workflows/ci.yml/badge.svg)
 
 **A Georgian investing simulator.** Practice investing with virtual lari across money market funds, bond funds, equity funds and stocks, including Georgian companies listed in London, without risking a single real tetri.
