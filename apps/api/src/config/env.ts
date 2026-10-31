@@ -9,6 +9,7 @@ const schema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   DATABASE_URL: z.string().min(1),
   JWT_ACCESS_SECRET: z.string().min(32, "must be at least 32 characters"),
+  ORIGIN_VERIFY_SECRET: z.string().min(16).optional(),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -10,3 +10,4 @@ build/
 coverage/
 apps/api/src/generated/
 dist-lambda/
+infra/cdk.out/

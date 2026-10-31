@@ -8,7 +8,7 @@ await build({
   target: "node22",
   format: "esm",
   sourcemap: true,
-  external: ["pg-native"],
+  external: ["pg-native", "@aws-sdk/*"],
   banner: {
     js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);",
   },
