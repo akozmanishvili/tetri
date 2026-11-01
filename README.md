@@ -67,25 +67,6 @@ flowchart LR
     S["Settlement job<br/>fills fund orders at NAV"] --> D
 ```
 
-```
-tetri/
-├── apps/
-│   ├── api/                 # Express + Prisma backend
-│   │   ├── prisma/          # schema, migrations, seed
-│   │   └── src/
-│   │       ├── routes/      # auth, me, instruments, orders, portfolio
-│   │       ├── services/    # trading engine, portfolio valuation
-│   │       ├── jobs/        # price publishing, order settlement
-│   │       └── middleware/  # auth guard, error handling
-│   └── web/                 # React frontend
-│       └── src/
-│           ├── auth/        # session state, route guards
-│           ├── pages/       # portfolio, markets, instrument, orders, auth
-│           └── components/  # layout, price chart, trade form
-├── docs/screenshots/
-└── docker-compose.yml
-```
-
 ## Engineering highlights
 
 Money is unforgiving, so most of the interesting work in Tetri is about making sure value is never created or lost.
@@ -132,7 +113,7 @@ docker compose up -d
 npm run db:migrate --workspace=api
 npm run db:generate --workspace=api
 npm run db:seed --workspace=api
-npm run jobs:publish --workspace=api   # catch prices up to today
+npm run jobs:daily --workspace=api   # catch prices up to today
 
 # Run frontend + backend together
 npm run dev
@@ -164,4 +145,4 @@ Tetri is an educational project. All money is virtual, fund data is simulated, a
 
 ## Author
 
-Built by [Ameksa](https://github.com/akozmanishvili), a Computer Science & Economics student.
+Built by [Amiko](https://github.com/akozmanishvili), a Computer Science & Economics student.

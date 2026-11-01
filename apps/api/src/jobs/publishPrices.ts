@@ -1,4 +1,3 @@
-// catches simulated market data up to today
 import { prisma } from "../lib/prisma.js";
 import { startOfUtcDay } from "../services/trading.js";
 
@@ -36,43 +35,32 @@ function missingBusinessDays(after: Date): Date[] {
   return days;
 }
 
-const instruments = await prisma.instrument.findMany({
-  where: { isActive: true },
-});
-
-for (const instrument of instruments) {
-  const last = await prisma.price.findFirst({
-    where: { instrumentId: instrument.id },
-    orderBy: { date: "desc" },
+export async function publishSimulatedPrices(): Promise<number> {
+  const instruments = await prisma.instrument.findMany({
+    where: { isActive: true },
   });
-  if (!last) continue;
+  let added = 0;
 
-  const { ret, vol } = PROFILES[instrument.type];
-  let value = Number(last.value);
-  const rows = missingBusinessDays(last.date).map((date) => {
-    value = nextValue(value, ret, vol);
-    return { instrumentId: instrument.id, date, value: value.toFixed(6) };
-  });
+  for (const instrument of instruments) {
+    const last = await prisma.price.findFirst({
+      where: { instrumentId: instrument.id },
+      orderBy: { date: "desc" },
+    });
+    if (!last) continue;
 
-  await prisma.price.createMany({ data: rows, skipDuplicates: true });
-  console.log(`✓ ${instrument.symbol.padEnd(5)} +${rows.length} prices`);
+    const { ret, vol } = PROFILES[instrument.type];
+    let value = Number(last.value);
+    const rows = missingBusinessDays(last.date).map((date) => {
+      value = nextValue(value, ret, vol);
+      return { instrumentId: instrument.id, date, value: value.toFixed(6) };
+    });
+
+    const { count } = await prisma.price.createMany({
+      data: rows,
+      skipDuplicates: true,
+    });
+    added += count;
+  }
+
+  return added;
 }
-
-for (const currency of ["USD", "GBP", "EUR"] as const) {
-  const last = await prisma.fxRate.findFirst({
-    where: { currency },
-    orderBy: { date: "desc" },
-  });
-  if (!last) continue;
-
-  let value = Number(last.gelPerUnit);
-  const rows = missingBusinessDays(last.date).map((date) => {
-    value = nextValue(value, 0, 0.06);
-    return { currency, date, gelPerUnit: value.toFixed(6) };
-  });
-
-  await prisma.fxRate.createMany({ data: rows, skipDuplicates: true });
-  console.log(`✓ ${currency}/GEL +${rows.length} rates`);
-}
-
-await prisma.$disconnect();
