@@ -71,8 +71,10 @@ export class TetriStack extends Stack {
     const jobs = new lambda.Function(this, "DailyJobs", {
       runtime: lambda.Runtime.NODEJS_22_X,
       architecture: lambda.Architecture.ARM_64,
-      handler: "jobs.handler", // same bundle, different entry file
-      code: bundle,
+      handler: "jobs.handler",
+      code: lambda.Code.fromAsset(
+        path.join(__dirname, "../../apps/api/dist-lambda"),
+      ),
       memorySize: 512,
       timeout: Duration.minutes(2),
       logGroup: jobsLogs,
@@ -80,7 +82,6 @@ export class TetriStack extends Stack {
     });
     jobs.addToRolePolicy(readSecrets);
 
-    // Every weekday at 18:00 Tbilisi time, after NBG publishes its rates
     new scheduler.Schedule(this, "DailyJobsSchedule", {
       description: "NBG rates, fund NAVs and order settlement",
       schedule: scheduler.ScheduleExpression.cron({
@@ -91,6 +92,8 @@ export class TetriStack extends Stack {
       }),
       target: new targets.LambdaInvoke(jobs, {}),
     });
+
+    new CfnOutput(this, "DailyJobsFunction", { value: jobs.functionName });
 
     const site = new s3.Bucket(this, "Site", {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, // only CloudFront can read it
