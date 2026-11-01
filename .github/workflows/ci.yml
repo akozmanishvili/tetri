@@ -48,3 +48,46 @@ jobs:
       - run: npm ci
       - run: npm run lint --workspace=web
       - run: npm run build --workspace=web
+
+  deploy:
+    name: Deploy to AWS
+    needs: [api, web]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate --workspace=api
+
+      - name: Build
+        run: |
+          npm run build --workspace=web
+          npm run build:lambda --workspace=api
+
+      - name: Apply database migrations
+        working-directory: apps/api
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DIRECT_URL }}
+
+      - name: Get temporary AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy
+        working-directory: infra
+        run: npx cdk deploy TetriStack --require-approval never
