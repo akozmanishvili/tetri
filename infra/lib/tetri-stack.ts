@@ -15,6 +15,9 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import type { Construct } from "constructs";
+import { TimeZone } from "aws-cdk-lib";
+import * as scheduler from "aws-cdk-lib/aws-scheduler";
+import * as targets from "aws-cdk-lib/aws-scheduler-targets";
 
 const SSM_PREFIX = "/tetri/prod/";
 
@@ -43,14 +46,13 @@ export class TetriStack extends Stack {
       },
     });
 
-    api.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ["ssm:GetParameters"],
-        resources: [
-          `arn:aws:ssm:${this.region}:${this.account}:parameter/tetri/prod/*`,
-        ],
-      }),
-    );
+    const readSecrets = new iam.PolicyStatement({
+      actions: ["ssm:GetParameters"],
+      resources: [
+        `arn:aws:ssm:${this.region}:${this.account}:parameter/tetri/prod/*`,
+      ],
+    });
+    api.addToRolePolicy(readSecrets);
 
     const apiUrl = api.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
@@ -60,6 +62,35 @@ export class TetriStack extends Stack {
       this,
       `${SSM_PREFIX}ORIGIN_VERIFY_SECRET`,
     );
+
+    const jobsLogs = new logs.LogGroup(this, "JobsLogs", {
+      retention: logs.RetentionDays.ONE_MONTH,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    const jobs = new lambda.Function(this, "DailyJobs", {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      architecture: lambda.Architecture.ARM_64,
+      handler: "jobs.handler", // same bundle, different entry file
+      code: bundle,
+      memorySize: 512,
+      timeout: Duration.minutes(2),
+      logGroup: jobsLogs,
+      environment: { NODE_ENV: "production", SSM_PREFIX },
+    });
+    jobs.addToRolePolicy(readSecrets);
+
+    // Every weekday at 18:00 Tbilisi time, after NBG publishes its rates
+    new scheduler.Schedule(this, "DailyJobsSchedule", {
+      description: "NBG rates, fund NAVs and order settlement",
+      schedule: scheduler.ScheduleExpression.cron({
+        minute: "0",
+        hour: "18",
+        weekDay: "MON-FRI",
+        timeZone: TimeZone.of("Asia/Tbilisi"),
+      }),
+      target: new targets.LambdaInvoke(jobs, {}),
+    });
 
     const site = new s3.Bucket(this, "Site", {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, // only CloudFront can read it
