@@ -8,5 +8,5 @@ const env = { account: process.env.CDK_DEFAULT_ACCOUNT, region: "us-east-1" };
 new TetriStack(app, "TetriStack", { env });
 new TetriCiStack(app, "TetriCiStack", {
   env,
-  githubRepo: "akozmanishvili/tetri",
+  githubRepo: "akozmanishvili@291004957/tetri@1426476085",
 });
