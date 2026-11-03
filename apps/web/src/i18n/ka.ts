@@ -1,4 +1,4 @@
-import type { Translations } from "./en.ts";
+import type { Translations } from "./en";
 
 export const ka: Translations = {
   common: {

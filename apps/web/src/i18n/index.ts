@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { en } from "./en.ts";
-import { ka } from "./ka.ts";
+import { en } from "./en";
+import { ka } from "./ka";
 
 export type Language = "ka" | "en";
 const STORAGE_KEY = "tetri.lang";
