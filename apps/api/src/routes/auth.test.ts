@@ -121,6 +121,35 @@ describe("GET /api/me", () => {
     expect(res.status).toBe(200);
     expect(res.body.balanceTetri).toBe("1000000");
   });
+  it("updates the user's language with PATCH", async () => {
+    const { accessToken } = await signup();
+    const patch = await request(app)
+      .patch("/api/me")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ locale: "en" });
+    expect(patch.status).toBe(200);
+    expect(patch.body.locale).toBe("en");
+
+    const me = await request(app)
+      .get("/api/me")
+      .set("Authorization", `Bearer ${accessToken}`);
+    expect(me.body.locale).toBe("en");
+  });
+
+  it("rejects unknown languages and ignores fields it shouldn't touch", async () => {
+    const { accessToken } = await signup();
+    const bad = await request(app)
+      .patch("/api/me")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ locale: "fr" });
+    expect(bad.status).toBe(400);
+
+    const sneaky = await request(app)
+      .patch("/api/me")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ email: "hacker@evil.com", locale: "en" });
+    expect(sneaky.body.email).toBe("test@tetri.ge");
+  });
 });
 
 // refresh
