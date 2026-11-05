@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "./api";
 import type {
@@ -57,17 +58,10 @@ export function useOrders() {
 
 export function nameFor(
   item: { nameEn: string; nameKa: string },
-  locale: string | undefined,
+  lang = i18n.language,
 ) {
-  return locale === "ka" ? item.nameKa : item.nameEn;
+  return lang === "ka" ? item.nameKa : item.nameEn;
 }
-
-export const typeLabels: Record<Instrument["type"], string> = {
-  MONEY_MARKET_FUND: "Money market fund",
-  BOND_FUND: "Bond fund",
-  EQUITY_FUND: "Equity fund",
-  STOCK: "Stock",
-};
 
 export function isFund(type: Instrument["type"]) {
   return type !== "STOCK";

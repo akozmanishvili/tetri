@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Area,
   AreaChart,
@@ -8,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatNumber } from "../lib/money";
 import type { PricePoint } from "../lib/types";
 
 const RANGES = { "1M": 21, "3M": 63, "6M": 126, "1Y": Infinity } as const; // trading days
@@ -20,8 +22,10 @@ export function PriceChart({
   prices: PricePoint[];
   currency: string;
 }) {
+  const { t } = useTranslation();
   const [range, setRange] = useState<Range>("3M");
 
+  // Number() is fine here: this is for DRAWING, not for calculating money
   const data = prices
     .slice(-RANGES[range])
     .map((p) => ({ date: p.date, value: Number(p.value) }));
@@ -29,6 +33,7 @@ export function PriceChart({
   const last = data.at(-1)?.value ?? 0;
   const up = last >= first;
   const color = up ? "#047857" : "#b91c1c";
+  const change = first ? ((last - first) / first) * 100 : 0;
 
   return (
     <div className="rounded-2xl border border-stone-200 bg-white p-4">
@@ -37,8 +42,7 @@ export function PriceChart({
           className={`text-sm font-medium ${up ? "text-emerald-700" : "text-red-700"}`}
         >
           {up ? "▲" : "▼"}{" "}
-          {first ? (((last - first) / first) * 100).toFixed(2) : "0.00"}% over{" "}
-          {range}
+          {t("instrument.change", { change: formatNumber(change, 2), range })}
         </p>
         <div className="flex gap-1">
           {(Object.keys(RANGES) as Range[]).map((r) => (
@@ -85,9 +89,11 @@ export function PriceChart({
               tick={{ fontSize: 11 }}
               width={60}
               stroke="#a8a29e"
-              tickFormatter={(v: number) => v.toFixed(2)}
+              tickFormatter={(v: number) => formatNumber(v, 2)}
             />
-            <Tooltip formatter={(v) => `${Number(v).toFixed(4)} ${currency}`} />
+            <Tooltip
+              formatter={(v) => `${formatNumber(Number(v), 4)} ${currency}`}
+            />
             <Area
               type="monotone"
               dataKey="value"

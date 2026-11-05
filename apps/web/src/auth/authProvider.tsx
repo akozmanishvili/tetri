@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import {
   useCallback,
   useEffect,
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const me = await apiFetch<Me>("/api/me");
         if (cancelled) return;
         setUser(me);
+        void i18n.changeLanguage(me.locale);
         setStatus("authenticated");
       } catch {
         if (!cancelled) setStatus("unauthenticated");
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(data.accessToken);
     setUser(data.user);
     setStatus("authenticated");
+    void i18n.changeLanguage(data.user.locale); // your saved language wins after login
   }, []);
 
   const login = useCallback(
@@ -76,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (input: { email: string; password: string; displayName: string }) => {
       const data = await apiFetch<AuthResponse>("/api/auth/signup", {
         method: "POST",
-        body: JSON.stringify(input),
+        body: JSON.stringify({ ...input, locale: i18n.language }),
       });
       handleAuth(data);
     },
@@ -94,9 +97,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [queryClient]);
 
+  const setPreferences = useCallback(
+    async (prefs: { locale?: "ka" | "en"; humorEnabled?: boolean }) => {
+      if (prefs.locale) void i18n.changeLanguage(prefs.locale); // switch instantly, save in background
+      const updated = await apiFetch<PublicUser>("/api/me", {
+        method: "PATCH",
+        body: JSON.stringify(prefs),
+      });
+      setUser(updated);
+    },
+    [],
+  );
+
   const value = useMemo(
-    () => ({ user, status, login, signup, logout }),
-    [user, status, login, signup, logout],
+    () => ({ user, status, login, signup, logout, setPreferences }),
+    [user, status, login, signup, logout, setPreferences],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

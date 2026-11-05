@@ -1,8 +1,10 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import i18n from "../i18n";
 
 type Props = { children: ReactNode };
 type State = { error: Error | null };
 
+// we use i18n.t directly
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { error: null };
 
@@ -21,16 +23,16 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="max-w-md text-center">
             <p className="text-4xl">🍷💥</p>
             <h1 className="mt-4 text-xl font-semibold text-stone-900">
-              Something spilled at the supra
+              {i18n.t("errorBoundary.title")}
             </h1>
             <p className="mt-2 text-stone-600">
-              An unexpected error happened. Reloading usually fixes it.
+              {i18n.t("errorBoundary.body")}
             </p>
             <button
               onClick={() => window.location.reload()}
               className="mt-6 rounded-lg bg-red-800 px-4 py-2 font-medium text-white hover:bg-red-900"
             >
-              Reload Tetri
+              {i18n.t("errorBoundary.reload")}
             </button>
           </div>
         </div>

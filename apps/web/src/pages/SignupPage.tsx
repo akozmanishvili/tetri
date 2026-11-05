@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/context";
 import { getErrorMessage } from "../lib/api";
 import { AuthLayout, buttonClass, inputClass } from "../components/authLayout";
 
 export function SignupPage() {
+  const { t } = useTranslation();
   const { signup } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,14 +28,11 @@ export function SignupPage() {
   }
 
   return (
-    <AuthLayout
-      title="Create your account"
-      toast="A new guest at the table! Here are 10,000 lari to start. You must drain it completely"
-    >
+    <AuthLayout title={t("auth.signupTitle")} toast={t("auth.signupToast")}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           className={inputClass}
-          placeholder="Your name"
+          placeholder={t("auth.name")}
           autoComplete="name"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
@@ -42,7 +41,7 @@ export function SignupPage() {
         <input
           className={inputClass}
           type="email"
-          placeholder="Email"
+          placeholder={t("auth.email")}
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -51,7 +50,7 @@ export function SignupPage() {
         <input
           className={inputClass}
           type="password"
-          placeholder="Password (8+ characters)"
+          placeholder={t("auth.passwordHint")}
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -60,13 +59,13 @@ export function SignupPage() {
         />
         {error && <p className="text-sm text-red-700">{error}</p>}
         <button className={buttonClass} disabled={submitting}>
-          {submitting ? "Creating account..." : "Sign up"}
+          {submitting ? t("auth.signingUp") : t("auth.signupButton")}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-stone-600">
-        Already have an account?{" "}
+        {t("auth.haveAccount")}{" "}
         <Link to="/login" className="font-medium text-red-800 hover:underline">
-          Log in
+          {t("auth.loginButton")}
         </Link>
       </p>
     </AuthLayout>

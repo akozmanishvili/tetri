@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export const inputClass =
   "w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 " +
@@ -17,14 +19,19 @@ export function AuthLayout({
   toast: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
-    <main className="grid min-h-screen place-items-center bg-stone-50 px-4">
+    <main className="relative grid min-h-screen place-items-center bg-stone-50 px-4">
+      <div className="absolute right-4 top-4">
+        <LanguageSwitcher />
+      </div>
       <div className="w-full max-w-sm">
         <h1 className="mb-1 text-center text-3xl font-bold text-red-900">
           Tetri
         </h1>
         <p className="mb-6 text-center text-sm italic text-stone-500">
-          🍷 Tamada: “{toast}”
+          {t("auth.tamada")}: “{toast}”
         </p>
         <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-xl font-semibold text-stone-900">{title}</h2>

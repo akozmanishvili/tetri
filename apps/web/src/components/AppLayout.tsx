@@ -1,13 +1,16 @@
 import { NavLink, Outlet } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/context";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const links = [
-  { to: "/", label: "Portfolio", end: true },
-  { to: "/markets", label: "Markets", end: false },
-  { to: "/orders", label: "Orders", end: false },
-];
+  { to: "/", key: "nav.portfolio", end: true },
+  { to: "/markets", key: "nav.markets", end: false },
+  { to: "/orders", key: "nav.orders", end: false },
+] as const;
 
 export function AppLayout() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
 
   return (
@@ -30,12 +33,13 @@ export function AppLayout() {
                     }`
                   }
                 >
-                  {l.label}
+                  {t(l.key)}
                 </NavLink>
               ))}
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <LanguageSwitcher />
             <span className="hidden text-stone-500 sm:inline">
               {user?.displayName}
             </span>
@@ -43,7 +47,7 @@ export function AppLayout() {
               onClick={logout}
               className="text-stone-600 hover:text-red-800"
             >
-              Log out
+              {t("nav.logout")}
             </button>
           </div>
         </div>

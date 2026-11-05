@@ -1,20 +1,21 @@
 import { Link } from "react-router";
-import { useAuth } from "../auth/context";
-import { nameFor, typeLabels, useInstruments } from "../lib/queries";
+import { useTranslation } from "react-i18next";
+import { nameFor, useInstruments } from "../lib/queries";
+import { formatNumber } from "../lib/money";
 
 export function MarketsPage() {
-  const { user } = useAuth();
+  const { t } = useTranslation();
   const { data: instruments, isPending, isError } = useInstruments();
 
-  if (isPending) return <p className="text-stone-500">Loading markets...</p>;
-  if (isError) return <p className="text-red-700">Couldn't load markets.</p>;
+  if (isPending) return <p className="text-stone-500">{t("common.loading")}</p>;
+  if (isError) return <p className="text-red-700">{t("markets.loadError")}</p>;
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-bold text-stone-900">Markets</h1>
-      <p className="mb-6 text-stone-600">
-        Funds settle at end-of-day NAV. Stocks trade instantly.
-      </p>
+      <h1 className="mb-1 text-2xl font-bold text-stone-900">
+        {t("markets.title")}
+      </h1>
+      <p className="mb-6 text-stone-600">{t("markets.subtitle")}</p>
 
       <div className="grid gap-3 sm:grid-cols-2">
         {instruments.map((i) => (
@@ -26,14 +27,14 @@ export function MarketsPage() {
             <div className="flex items-center justify-between">
               <span className="font-mono font-semibold">{i.symbol}</span>
               <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-600">
-                {typeLabels[i.type]}
+                {t(`types.${i.type}`)}
               </span>
             </div>
-            <p className="mt-1 text-stone-800">{nameFor(i, user?.locale)}</p>
+            <p className="mt-1 text-stone-800">{nameFor(i)}</p>
             <p className="mt-2 text-xs text-stone-500">
-              Priced in {i.currency}
+              {t("markets.pricedIn", { currency: i.currency })}
               {i.expenseRatioBps !== null &&
-                ` · ${(i.expenseRatioBps / 100).toFixed(2)}% annual fee`}
+                ` · ${t("markets.annualFee", { fee: formatNumber(i.expenseRatioBps / 100, 2) })}`}
             </p>
           </Link>
         ))}

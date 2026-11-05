@@ -13,6 +13,10 @@ export type AuthContextValue = {
     displayName: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
+  setPreferences: (prefs: {
+    locale?: "ka" | "en";
+    humorEnabled?: boolean;
+  }) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
