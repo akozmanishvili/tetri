@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { apiFetch, getErrorMessage } from "../lib/api";
@@ -9,10 +10,11 @@ import type { Order, PlaceOrderBody, Quote } from "../lib/types";
 type Props = {
   quote: Quote;
   cashTetri: string;
-  ownedUnits: string;
+  ownedUnits: string; // "0" if the user owns none
 };
 
 export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [side, setSide] = useState<"BUY" | "SELL">("BUY");
   const [input, setInput] = useState("");
@@ -22,28 +24,28 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
   const gelPerUnit = new Decimal(quote.gelPerUnit);
   const owned = new Decimal(ownedUnits);
 
-  // validations
   let preview: string | null = null;
   let problem: string | null = null;
 
   if (input.trim() !== "") {
     if (side === "BUY") {
       const tetri = parseLariToTetri(input);
-      if (tetri === null) problem = "Enter an amount like 500 or 250.50";
-      else if (tetri < 100n) problem = "Minimum order is 1 GEL";
-      else if (tetri > BigInt(cashTetri))
-        problem = "That's more cash than you have";
+      if (tetri === null) problem = t("trade.invalidAmount");
+      else if (tetri < 100n) problem = t("trade.minOrder");
+      else if (tetri > BigInt(cashTetri)) problem = t("trade.notEnoughCash");
       else {
         const units = new Decimal(tetri.toString()).div(100).div(gelPerUnit);
-        preview = `≈ ${formatUnits(units.toString())} units`;
+        preview = t("trade.previewUnits", {
+          units: formatUnits(units.toString()),
+        });
       }
     } else {
       if (!/^\d+(\.\d{1,8})?$/.test(input.trim()))
-        problem = "Enter units, e.g. 2.5";
+        problem = t("trade.invalidUnits");
       else {
         const units = new Decimal(input.trim());
-        if (units.lte(0)) problem = "Units must be positive";
-        else if (units.gt(owned)) problem = "You don't own that many units";
+        if (units.lte(0)) problem = t("trade.positiveUnits");
+        else if (units.gt(owned)) problem = t("trade.notEnoughUnits");
         else {
           const tetri = units
             .mul(gelPerUnit)
@@ -55,7 +57,6 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
     }
   }
 
-  // submit
   const mutation = useMutation({
     mutationFn: (body: PlaceOrderBody) =>
       apiFetch<Order>("/api/orders", {
@@ -68,10 +69,12 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
       setInput("");
       setSuccess(
         order.status === "PENDING"
-          ? "Order placed! It will execute at today's NAV after the market closes."
+          ? t("trade.successPending")
           : order.side === "BUY"
-            ? `Done! You bought ${formatUnits(order.units ?? "0")} units.`
-            : "Done! The proceeds are in your cash balance.",
+            ? t("trade.successBought", {
+                units: formatUnits(order.units ?? "0"),
+              })
+            : t("trade.successSold"),
       );
     },
   });
@@ -115,13 +118,13 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
               side === s ? "bg-white shadow-sm" : "text-stone-500"
             }`}
           >
-            {s === "BUY" ? "Buy" : "Sell"}
+            {s === "BUY" ? t("trade.buy") : t("trade.sell")}
           </button>
         ))}
       </div>
 
       <label className="mb-1 block text-sm text-stone-600">
-        {side === "BUY" ? "Amount (GEL)" : "Units to sell"}
+        {side === "BUY" ? t("trade.amountLabel") : t("trade.unitsLabel")}
       </label>
       <div className="flex gap-2">
         <input
@@ -137,7 +140,7 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
             onClick={() => setInput(owned.toString())}
             className="rounded-lg border border-stone-300 px-3 text-sm text-stone-600 hover:bg-stone-50"
           >
-            Max
+            {t("trade.max")}
           </button>
         )}
       </div>
@@ -152,14 +155,13 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
 
       <p className="mt-1 text-xs text-stone-500">
         {side === "BUY"
-          ? `Cash available: ${formatTetri(cashTetri)}`
-          : `You own ${formatUnits(ownedUnits, 8)} units`}
+          ? t("trade.cashAvailable", { amount: formatTetri(cashTetri) })
+          : t("trade.youOwn", { units: formatUnits(ownedUnits, 8) })}
       </p>
 
       {fund && (
         <p className="mt-3 rounded-lg bg-amber-50 p-2 text-xs text-amber-900">
-          🍷 Funds don't trade instantly: your order executes at the end-of-day
-          NAV, so the final number may differ slightly from this preview.
+          {t("trade.fundNotice")}
         </p>
       )}
 
@@ -175,8 +177,10 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
         className="mt-4 w-full rounded-lg bg-red-800 px-4 py-2 font-medium text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {mutation.isPending
-          ? "Placing order..."
-          : `${side === "BUY" ? "Buy" : "Sell"} ${quote.symbol}`}
+          ? t("trade.placing")
+          : side === "BUY"
+            ? t("trade.buySymbol", { symbol: quote.symbol })
+            : t("trade.sellSymbol", { symbol: quote.symbol })}
       </button>
     </form>
   );

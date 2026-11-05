@@ -1,20 +1,19 @@
 import { Link, useParams } from "react-router";
-import { useAuth } from "../auth/context";
+import { useTranslation } from "react-i18next";
 import { PriceChart } from "../components/PriceChart";
 import { TradeForm } from "../components/TradeForm";
-import { formatTetri } from "../lib/money";
+import { formatNumber, formatTetri } from "../lib/money";
 import {
   isFund,
   nameFor,
-  typeLabels,
   usePortfolio,
   usePrices,
   useQuote,
 } from "../lib/queries";
 
 export function InstrumentPage() {
+  const { t } = useTranslation();
   const symbol = useParams().symbol!.toUpperCase();
-  const { user } = useAuth();
   const quote = useQuote(symbol);
   const prices = usePrices(symbol);
   const portfolio = usePortfolio();
@@ -22,17 +21,17 @@ export function InstrumentPage() {
   if (quote.isError) {
     return (
       <p className="text-stone-600">
-        Instrument not found.{" "}
+        {t("instrument.notFound")}{" "}
         <Link to="/markets" className="text-red-800 underline">
-          Back to markets
+          {t("instrument.backToMarkets")}
         </Link>
       </p>
     );
   }
   if (quote.isPending || portfolio.isPending)
-    return <p className="text-stone-500">Loading...</p>;
+    return <p className="text-stone-500">{t("common.loading")}</p>;
   if (portfolio.isError)
-    return <p className="text-red-700">Couldn't load your portfolio.</p>;
+    return <p className="text-red-700">{t("dashboard.loadError")}</p>;
 
   const q = quote.data;
   const holding = portfolio.data.holdings.find((h) => h.symbol === symbol);
@@ -44,29 +43,32 @@ export function InstrumentPage() {
           to="/markets"
           className="text-sm text-stone-500 hover:text-stone-800"
         >
-          ← Markets
+          {t("instrument.back")}
         </Link>
         <div className="mt-2 flex flex-wrap items-baseline gap-3">
-          <h1 className="text-2xl font-bold text-stone-900">
-            {nameFor(q, user?.locale)}
-          </h1>
+          <h1 className="text-2xl font-bold text-stone-900">{nameFor(q)}</h1>
           <span className="font-mono text-stone-500">{q.symbol}</span>
           <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-600">
-            {typeLabels[q.type]}
+            {t(`types.${q.type}`)}
           </span>
         </div>
         <p className="mt-1 text-stone-700">
           <span className="text-xl font-semibold">
-            {Number(q.price).toFixed(isFund(q.type) ? 4 : 2)} {q.currency}
+            {formatNumber(q.price, isFund(q.type) ? 4 : 2)} {q.currency}
           </span>
           {q.currency !== "GEL" && (
             <span className="ml-2 text-sm text-stone-500">
-              ≈ {formatTetri(BigInt(Math.floor(Number(q.gelPerUnit) * 100)))}{" "}
-              per unit at {Number(q.fxRate).toFixed(4)} GEL/{q.currency}
+              {t("instrument.perUnit", {
+                amount: formatTetri(
+                  BigInt(Math.floor(Number(q.gelPerUnit) * 100)),
+                ),
+                rate: formatNumber(q.fxRate, 4),
+                currency: q.currency,
+              })}
             </span>
           )}
           <span className="ml-2 text-xs text-stone-400">
-            as of {q.priceDate}
+            {t("instrument.asOf", { date: q.priceDate })}
           </span>
         </p>
       </div>

@@ -3,8 +3,10 @@ import { Link } from "react-router";
 import { useAuth } from "../auth/context";
 import { getErrorMessage } from "../lib/api";
 import { AuthLayout, buttonClass, inputClass } from "../components/authLayout";
+import { useTranslation } from "react-i18next";
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,15 +27,12 @@ export function LoginPage() {
   }
 
   return (
-    <AuthLayout
-      title="Log in"
-      toast="Welcome back! Your seat at the supra is still warm. Come, Come, we just sat around the table!"
-    >
+    <AuthLayout title={t("auth.loginTitle")} toast={t("auth.loginToast")}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           className={inputClass}
           type="email"
-          placeholder="Email"
+          placeholder={t("auth.email")}
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -42,7 +41,7 @@ export function LoginPage() {
         <input
           className={inputClass}
           type="password"
-          placeholder="Password"
+          placeholder={t("auth.password")}
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -50,13 +49,13 @@ export function LoginPage() {
         />
         {error && <p className="text-sm text-red-700">{error}</p>}
         <button className={buttonClass} disabled={submitting}>
-          {submitting ? "Logging in..." : "Log in"}
+          {submitting ? t("auth.loggingIn") : t("auth.loginButton")}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-stone-600">
-        New here?{" "}
+        {t("auth.newHere")}{" "}
         <Link to="/signup" className="font-medium text-red-800 hover:underline">
-          Create an account
+          {t("auth.createAccount")}
         </Link>
       </p>
     </AuthLayout>

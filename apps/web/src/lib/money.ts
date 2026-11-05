@@ -74,3 +74,14 @@ export function profitColor(tetri: string | bigint): string {
   if (v < 0n) return "text-red-700";
   return "text-stone-500";
 }
+
+export function formatNumber(
+  value: string | number,
+  decimals: number,
+  lang = i18n.language,
+): string {
+  return new Intl.NumberFormat(localeTag(lang), {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number(value));
+}
