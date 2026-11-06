@@ -7,12 +7,14 @@ import type {
   Portfolio,
   PriceHistory,
   Quote,
+  UnlockedToasts,
 } from "./types";
 
 export const queryKeys = {
   portfolio: ["portfolio"] as const,
   orders: ["orders"] as const,
   instruments: ["instruments"] as const,
+  wisdom: ["wisdom"] as const,
   quote: (symbol: string) => ["quote", symbol] as const,
   prices: (symbol: string) => ["prices", symbol] as const,
 };
@@ -65,4 +67,11 @@ export function nameFor(
 
 export function isFund(type: Instrument["type"]) {
   return type !== "STOCK";
+}
+
+export function useWisdom() {
+  return useQuery({
+    queryKey: queryKeys.wisdom,
+    queryFn: () => apiFetch<UnlockedToasts>("/api/toasts/unlocked"),
+  });
 }
