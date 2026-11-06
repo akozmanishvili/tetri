@@ -5,6 +5,7 @@ export type PublicUser = {
   displayName: string;
   locale: "ka" | "en";
   humorEnabled: boolean;
+  role: "USER" | "ADMIN";
 };
 
 export type Me = PublicUser & { balanceTetri: string };
@@ -79,3 +80,19 @@ export type Order = {
 export type PlaceOrderBody =
   | { symbol: string; side: "BUY"; amountTetri: string }
   | { symbol: string; side: "SELL"; units: string };
+
+export type Toast = {
+  id: string;
+  conceptKey: string;
+  emoji: string;
+  titleKa: string;
+  titleEn: string;
+  bodyKa: string;
+  bodyEn: string;
+  isActive: boolean;
+};
+
+export type UnlockedToasts = {
+  total: number;
+  toasts: (Toast & { unlockedAt: string })[];
+};
