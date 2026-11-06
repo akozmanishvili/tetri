@@ -29,19 +29,19 @@ const STARTER_TOASTS = [
     titleEn: "Two prices in one",
     titleKa: "ორი ერთში",
     bodyEn:
-      "This one is priced in a foreign currency, so your result in lari depends on the price AND the exchange rate. The stock can rise while the lari gets stronger, and you end up right where you started. A good guest watches both glasses.",
+      "This one is priced in a foreign currency, so your result in lari depends on the price AND the exchange rate. The stock can rise while the lari gets stronger, and you end up right where you started. A good investor watches both price and exchange rate, just like good Tamada watches if you completely emptied your glass or not.",
     bodyKa:
-      "ეს უცხოურ ვალუტაშია, ამიტომ შენი შედეგი ლარში ფასზეც დამოკიდებულია და კურსზეც. აქცია შეიძლება გაიზარდოს, ლარი გამყარდეს და მაინც იქ დარჩე, საიდანაც დაიწყე. კარგი სტუმარი ორივე ჭიქას უყურებს.",
+      "უცხოურ ვალუტაშია, ამიტომ შენი შედეგი ფასზეც არის დამოკიდებული და კურსზეც. აქცია შეიძლება გაიზარდოს, ამავე დროს ლარი გამყარდეს და შედეგად შენ მაინც იქ დარჩები საიდანაც დაიწყე. კარგი ინვესტორი ორივეს უყურებს ფასსაც და კურსსაც, ისე გულდასმით როგორც, თამადა შენს ჭიქას, ბოლომდე დაცალე თუ არა.",
   },
   {
     conceptKey: "fees",
     emoji: "🧾",
-    titleEn: "Mind the waiter",
-    titleKa: "ფრთხილად, მიმტანი!",
+    titleEn: "Mind the waiter tip",
+    titleKa: "ფრთხილად, მიმტანსაც რჩება ჩაი!",
     bodyEn:
-      "Every year the fund keeps a small cup of your wine as its fee. Half a percent sounds like nothing, but over 20 years it fills a whole qvevri. Before you sit down, check the fee.",
+      "Every year the fund keeps a small cup of your wine as its fee. Half a percent sounds like nothing, but over 20 years it fills a whole dock. Before you sit down, check the fee.",
     bodyKa:
-      "ყოველწლიურად ფონდი შენი ღვინიდან პატარა ჭიქას საკომისიოდ იტოვებს. ნახევარი პროცენტი არაფრად ჩანს, მაგრამ 20 წელიწადში მთელ ქვევრად იქცევა. დაჯდომამდე საკომისიოს დახედე.",
+      "ყოველწლიურად ფონდი შენი ჭიქიდან პატარა ნაწილს საკომისიოდ ისხავს თავის ოციანში. ახლა ფიქრობ, რომ ნახევარი პროცენტი დიდი არაფერიაო, მაგრამ 20 წელიწადში პატარ-პატარა საკომისიოები მთელ ქვევრსაც გაავსებს. სუფრასთან დაჯდომამდე საკომისიოს კარგად გადახედე.",
   },
   {
     conceptKey: "first_order",
@@ -51,17 +51,17 @@ const STARTER_TOASTS = [
     bodyEn:
       "Gaumarjos! The first toast is always the hardest. Now the real lesson begins: don't check the price every five minutes. Wine needs time, and so does money.",
     bodyKa:
-      "გაგიმარჯოს! პირველი სადღეგრძელო ყველაზე რთულია. ახლა ნამდვილი გაკვეთილი იწყება: ფასს ყოველ ხუთ წუთში ნუ ამოწმებ. ღვინოს დრო სჭირდება, ფულსაც.",
+      "გაგიმარჯოს ღმერთმა! პირველი რთველი ყველაზე რთულია. ნამდვილი გაკვეთილი ჯერ ახლა იწყება: ფასი ყოველ ხუთ წუთში არ შეამოწო. ღვინოს დასაყენებლად დრო სჭირდება, ფულიც ეგრეა.",
   },
   {
     conceptKey: "pending_order",
     emoji: "⏳",
     titleEn: "Patience, my friend",
-    titleKa: "მოთმინება, ჩემო კარგო",
+    titleKa: "მოთმინება, ჯიგარო",
     bodyEn:
       "Fund orders don't fill instantly. Everyone who orders today gets the same price: tonight's NAV. No rushing, no tricks, every guest at the table is equal.",
     bodyKa:
-      "ფონდის შეკვეთა მყისიერად არ სრულდება. ყველა, ვინც დღეს შეუკვეთა, ერთსა და იმავე ფასს მიიღებს — დღევანდელ საღამოს NAV-ს. არავინ ჩქარობს, სუფრასთან ყველა სტუმარი თანასწორია.",
+      "ფონდის შეკვეთა მყისიერად არ სრულდება. ყველა, ვინც დღეს შეუკვეთა, ერთსა და იმავე ფასს მიიღებს — დღევანდელი საღამოს NAV-ს. სიჩქარე და აჟიოტაჟი არაა საჭირო, სუფრასთან ყველა თანასწორია.",
   },
   {
     conceptKey: "diversification",
@@ -69,24 +69,22 @@ const STARTER_TOASTS = [
     titleEn: "A table full of dishes",
     titleKa: "სავსე სუფრა",
     bodyEn:
-      "A good supra never has just one dish. If the khachapuri burns, there's still mtsvadi. Owning different things means one bad day can't ruin the whole feast.",
+      "A good supra never has just one dish. If the lobiani runs out, there's still mtsvadi. Owning different things means one bad day can't ruin the whole feast.",
     bodyKa:
-      "კარგ სუფრაზე ერთი კერძი არასდროს დგას — ხაჭაპური თუ დაიწვა, მწვადი მაინც გვაქვს. სხვადასხვა აქტივი იმას ნიშნავს, რომ ერთი ცუდი დღე მთელ ქეიფს ვერ ჩაშლის.",
+      "კარგ სუფრა სავსე უნდა იყოს — ხაჭაპური თუ გამოგველია, მწვადი მაინც გვექნება. სხვადასხვა აქტივი და ინვესტიციების მრავალფეროვნება იმას ნიშნავს, რომ ერთი ცუდი დღე მთელ ქეიფს ვერ ჩაშლის.",
   },
   {
     conceptKey: "first_loss",
     emoji: "🔴",
     titleEn: "Something turned red",
-    titleKa: "რაღაც გაწითლდა",
+    titleKa: "გაწითლდა",
     bodyEn:
       "Don't panic. Red numbers are part of every investor's story. Selling in fear turns a temporary dip into a permanent loss. The best investors sit calmly through the bad toasts too.",
     bodyKa:
-      "ნუ ღელავ — წითელი რიცხვები ყველა ინვესტორის ისტორიის ნაწილია. შიშით გაყიდვა დროებით ვარდნას მუდმივ ზარალად აქცევს. საუკეთესო ინვესტორები ცუდ სადღეგრძელოებსაც მშვიდად ისმენენ.",
+      "ნუ ღელავ — გაწითელი რიცხვები და მინუსიანი პროცენტები ყველა ინვესტორის ისტორიის ნაწილია. პანიკის გამო გაყიდვა დროებით ვარდნას მუდმივ ზარალად აქცევს. საუკეთესო ინვესტორები ცუდ სადღეგრძელოებსაც ითმენენ.",
   },
 ];
 
-// Create-only: if a toast already exists (maybe you edited it in the admin page),
-// leave it alone. Safe to run any number of times.
 for (const toast of STARTER_TOASTS) {
   await prisma.toast.upsert({
     where: { conceptKey: toast.conceptKey },
