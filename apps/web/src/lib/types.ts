@@ -96,3 +96,36 @@ export type UnlockedToasts = {
   total: number;
   toasts: (Toast & { unlockedAt: string })[];
 };
+
+export type SimulationRequest = {
+  amountTetri: string;
+  mode: "monthly" | "lump";
+  start: string;
+  symbols: string[];
+  depositRatePct: string;
+  inflationPct: string;
+};
+
+export type SimulationOption = {
+  key: string;
+  finalTetri: string;
+  profitTetri: string;
+  returnPct: string;
+  annualizedPct: string | null;
+  beatsInflation: boolean;
+};
+
+export type SimulationResult = {
+  startDate: string;
+  endDate: string;
+  contributions: number;
+  investedTetri: string;
+  breakEvenTetri: string;
+  options: SimulationOption[];
+  series: {
+    date: string;
+    investedTetri: string;
+    breakEvenTetri: string;
+    values: Record<string, string>;
+  }[];
+};

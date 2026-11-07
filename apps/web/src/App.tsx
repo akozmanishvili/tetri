@@ -9,6 +9,7 @@ import { InstrumentPage } from "./pages/InstrumentPage";
 import { OrdersPage } from "./pages/OrdersPage";
 import { WisdomPage } from "./pages/WisdomPage.tsx";
 import { AdminPage } from "./pages/AdminPage.tsx";
+import { SimulatorPage } from "./pages/SimulatorPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/instruments/:symbol" element={<InstrumentPage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/wisdom" element={<WisdomPage />} />
+            <Route path="/simulator" element={<SimulatorPage />} />
             <Route path="/admin" element={<AdminPage />} />
           </Route>
         </Route>
