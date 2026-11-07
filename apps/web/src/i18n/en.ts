@@ -13,6 +13,7 @@ export const en = {
     wisdom: "Supra wisdom",
     admin: "Admin",
     logout: "Log out",
+    simulator: "What if?",
   },
   auth: {
     loginTitle: "Log in",
