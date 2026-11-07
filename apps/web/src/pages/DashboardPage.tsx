@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/context";
 import { nameFor, usePortfolio } from "../lib/queries";
+import { useTamada } from "../tamada/context";
 import {
   STARTING_BALANCE_TETRI,
   formatPercent,
@@ -24,6 +25,14 @@ export function DashboardPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: portfolio, isPending, isError } = usePortfolio();
+
+  // Hooks must run on every render, so the triggers go BEFORE the early returns
+  useTamada("welcome");
+  useTamada("diversification", (portfolio?.holdings.length ?? 0) >= 3);
+  useTamada(
+    "first_loss",
+    portfolio?.holdings.some((h) => BigInt(h.profitTetri) < 0n) ?? false,
+  );
 
   if (isPending) return <p className="text-stone-500">{t("common.loading")}</p>;
   if (isError)

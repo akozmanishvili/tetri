@@ -7,8 +7,8 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { MarketsPage } from "./pages/MarketsPage";
 import { InstrumentPage } from "./pages/InstrumentPage";
 import { OrdersPage } from "./pages/OrdersPage";
-import { WisdomPage } from "./pages/WisdomPage";
-import { AdminPage } from "./pages/AdminPage";
+import { WisdomPage } from "./pages/WisdomPage.tsx";
+import { AdminPage } from "./pages/AdminPage.tsx";
 
 export default function App() {
   return (
