@@ -18,7 +18,8 @@
     "test:watch": "vitest",
     "jobs:daily": "tsx src/jobs/cli.ts",
     "jobs:settle": "tsx src/jobs/settle.ts",
-    "build:lambda": "node scripts/build-lambda.mjs"
+    "build:lambda": "node scripts/build-lambda.mjs",
+    "db:seed-toasts": "tsx prisma/seed-toasts.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,10 +1,10 @@
-// ONLY shape of user that ever leaves the API
 export function publicUser(user: {
   id: string;
   email: string;
   displayName: string;
   locale: string;
   humorEnabled: boolean;
+  role: string;
 }) {
   return {
     id: user.id,
@@ -12,5 +12,6 @@ export function publicUser(user: {
     displayName: user.displayName,
     locale: user.locale,
     humorEnabled: user.humorEnabled,
+    role: user.role, // lets the frontend show/hide the admin link
   };
 }

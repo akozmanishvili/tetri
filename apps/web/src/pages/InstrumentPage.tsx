@@ -10,6 +10,7 @@ import {
   usePrices,
   useQuote,
 } from "../lib/queries";
+import { useTamada } from "../tamada/context";
 
 export function InstrumentPage() {
   const { t } = useTranslation();
@@ -17,6 +18,10 @@ export function InstrumentPage() {
   const quote = useQuote(symbol);
   const prices = usePrices(symbol);
   const portfolio = usePortfolio();
+
+  useTamada("nav", !!quote.data && isFund(quote.data.type));
+  useTamada("fees", quote.data?.expenseRatioBps != null);
+  useTamada("fx", !!quote.data && quote.data.currency !== "GEL");
 
   if (quote.isError) {
     return (

@@ -6,6 +6,7 @@ import { apiFetch, getErrorMessage } from "../lib/api";
 import { formatTetri, formatUnits, parseLariToTetri } from "../lib/money";
 import { isFund, queryKeys } from "../lib/queries";
 import type { Order, PlaceOrderBody, Quote } from "../lib/types";
+import { useTamadaContext } from "../tamada/context";
 
 type Props = {
   quote: Quote;
@@ -16,6 +17,7 @@ type Props = {
 export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { unlock } = useTamadaContext();
   const [side, setSide] = useState<"BUY" | "SELL">("BUY");
   const [input, setInput] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
@@ -76,6 +78,8 @@ export function TradeForm({ quote, cashTetri, ownedUnits }: Props) {
               })
             : t("trade.successSold"),
       );
+      unlock("first_order");
+      if (order.status === "PENDING") unlock("pending_order");
     },
   });
 

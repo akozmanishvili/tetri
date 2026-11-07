@@ -48,6 +48,10 @@ enum LedgerEntryType {
   FEE
 }
 
+enum Role {
+  USER
+  ADMIN
+}
 
 model User {
   id           String   @id @default(uuid())
@@ -58,6 +62,8 @@ model User {
   humorEnabled Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  role   Role        @default(USER)
+  toasts UserToast[]
 
   wallet        Wallet?
   holdings      Holding[]
@@ -175,4 +181,28 @@ model RefreshToken {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+}
+
+model Toast {
+  id         String      @id @default(uuid())
+  conceptKey String      @unique 
+  emoji      String      @default("🍷")
+  titleKa    String
+  titleEn    String
+  bodyKa     String
+  bodyEn     String
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  unlockedBy UserToast[]
+}
+
+model UserToast {
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  toastId    String
+  toast      Toast    @relation(fields: [toastId], references: [id], onDelete: Cascade)
+  unlockedAt DateTime @default(now())
+
+  @@id([userId, toastId])
 }
