@@ -10,6 +10,8 @@ export const en = {
     portfolio: "Portfolio",
     markets: "Markets",
     orders: "Orders",
+    wisdom: "Supra wisdom",
+    admin: "Admin",
     logout: "Log out",
   },
   auth: {
@@ -118,6 +120,20 @@ export const en = {
     title: "Something spilled at the supra",
     body: "An unexpected error happened. Reloading usually fixes it.",
     reload: "Reload Tetri",
+  },
+  tamada: {
+    says: "🍷 The Tamada says",
+    cheers: "Gaumarjos!",
+  },
+  wisdom: {
+    title: "Supra wisdom",
+    subtitle: "Every toast the Tamada has raised for you.",
+    progress: "{{unlocked}} of {{total}} toasts collected",
+    locked:
+      "{{remaining}} more toasts are waiting at the table. Keep investing to hear them.",
+    empty: "No toasts yet. Make your first trade and the Tamada will speak.",
+    toggle: "Show Tamada pop-ups",
+    loadError: "Couldn't load the toasts.",
   },
 } as const;
 
