@@ -1,6 +1,6 @@
 import type { ErrorRequestHandler } from "express";
-import { TradingError } from "../services/trading.js";
 import { ZodError } from "zod";
+import { HttpError } from "../lib/errors.js";
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof ZodError) {
@@ -11,10 +11,10 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
         message: i.message,
       })),
     });
-
     return;
   }
-  if (err instanceof TradingError) {
+
+  if (err instanceof HttpError) {
     res.status(err.status).json({ error: err.message });
     return;
   }
@@ -25,5 +25,5 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   }
 
   console.error(err);
-  res.status(500).json({ error: "Internal server error" });
+  res.status(500).json({ error: "Internal server error" }); // never leak internals
 };
