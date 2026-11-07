@@ -13,6 +13,7 @@ import { portfolioRouter } from "./routes/portfolio.js";
 import { toastsRouter } from "./routes/toasts.js";
 import { adminRouter } from "./routes/admin.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { simulatorRouter } from "./routes/simulator.js";
 
 export const app = express();
 
@@ -58,5 +59,6 @@ app.use("/api/orders", ordersRouter);
 app.use("/api/portfolio", portfolioRouter);
 app.use("/api/toasts", toastsRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/simulator", simulatorRouter);
 
 app.use(errorHandler);
