@@ -83,6 +83,26 @@ const STARTER_TOASTS = [
     bodyKa:
       "ნუ ღელავ — გაწითელი რიცხვები და მინუსიანი პროცენტები ყველა ინვესტორის ისტორიის ნაწილია. პანიკის გამო გაყიდვა დროებით ვარდნას მუდმივ ზარალად აქცევს. საუკეთესო ინვესტორები ცუდ სადღეგრძელოებსაც ითმენენ.",
   },
+  {
+    conceptKey: "compounding",
+    emoji: "📈",
+    titleEn: "The magic of compounding",
+    titleKa: "რთული პროცენტის მაგია",
+    bodyEn:
+      "Einstein supposedly called compound interest the eighth wonder of the world. Your money earns money, then that money earns money too. Like a good supra: the toasts get longer as the night goes on. The secret ingredient is time, so start early.",
+    bodyKa:
+      "ამბობენ, რომ აინშტაინმა რთულ პროცენტს მსოფლიოს მერვე საოცრება უწოდა. შენი ფული ფულს გამოიმუშავებს, მერე ის ფულიც — ფულს. როგორც კარგი სუფრა: რაც უფრო დიდ ხანს გრძელდება, მით უფრო გრძელი და კარგია სადღეგრძელოებიც. მთავარი ინგრედიენტი დროა, ამიტომ ადრე დაიწყე ქეიფიც და ინვესტიციაც.",
+  },
+  {
+    conceptKey: "inflation",
+    emoji: "🛏️",
+    titleEn: "Keeping money undet mattress always loses money",
+    titleKa: "ფულის ლეიბის ქვეშ დება ყოველთვის წაგაგებინებს ფულს",
+    bodyEn:
+      "Grandma's savings under the mattress? The mattress won. Inflation quietly eats cash every year: at 3% a year, money loses about half its value in 23 years.",
+    bodyKa:
+      "როგორც 90-იანების ქართველი პიანინოში ინახავ ქეშს? ჩათვალე პიანინო ფულს გიჭამს. ინფლაცია ყოველწლიურად ჩუმად ჭამს ნაღდ ფულს: წელიწადში 3% ინგლაციით შენი ფული დაახლოებით 23 წელიწადში ღირებულების ნახევარს კარგავს. ანუ თუ 1000 ლარს ინახავ პიანინოს ქვეშ 23 წლის განმავლობაში ინვესტირების გარეშე, 23 წლის შემდეგ 3% წლიური ინფლაციით შენს 1000 ლარს მხოლოდ ნახევარი ძალაღა ექნება!",
+  },
 ];
 
 for (const toast of STARTER_TOASTS) {
