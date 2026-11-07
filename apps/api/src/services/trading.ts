@@ -1,6 +1,7 @@
 import { Decimal } from "decimal.js";
 import type { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
+import { HttpError } from "../lib/errors.js";
 
 Decimal.set({ precision: 40 });
 
@@ -8,13 +9,7 @@ type Tx = Prisma.TransactionClient;
 
 const FUND_TYPES = new Set(["MONEY_MARKET_FUND", "BOND_FUND", "EQUITY_FUND"]);
 
-export class TradingError extends Error {
-  status: number;
-  constructor(message: string, status = 400) {
-    super(message);
-    this.status = status;
-  }
-}
+export class TradingError extends HttpError {}
 
 // helpers
 
