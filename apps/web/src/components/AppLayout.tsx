@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 const links = [
   { to: "/", key: "nav.portfolio", end: true },
   { to: "/markets", key: "nav.markets", end: false },
+  { to: "/simulator", key: "nav.simulator", end: false },
   { to: "/orders", key: "nav.orders", end: false },
   { to: "/wisdom", key: "nav.wisdom", end: false },
 ] as const;
