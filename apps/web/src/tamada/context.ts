@@ -8,7 +8,9 @@ export type TamadaConcept =
   | "first_order"
   | "pending_order"
   | "diversification"
-  | "first_loss";
+  | "first_loss"
+  | "compounding"
+  | "inflation";
 
 type TamadaContextValue = {
   unlock: (concept: TamadaConcept) => void;
